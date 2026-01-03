@@ -1,29 +1,31 @@
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FixYourSleep | Aludj jobban, élj jobban.</title>
+    <title>FixYourSleep | Master Your Rest</title>
     <style>
-        /* DESIGN (CSS) - Sötét módra hangolva */
+        /* DESIGN - Optimized for Dark Mode */
         :root {
-            --bg-color: #0f172a; /* Nagyon sötét kék/szürke */
+            --bg-color: #0f172a; 
             --card-bg: #1e293b;
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
-            --accent: #38bdf8; /* Világoskék kiemelés */
+            --accent: #38bdf8; 
             --accent-hover: #0ea5e9;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: var(--font-main);
             margin: 0;
             padding: 20px;
             display: flex;
             justify-content: center;
             min-height: 100vh;
+            transition: all 0.5s ease; /* Smooth transition for Easter Egg */
         }
 
         .container {
@@ -31,7 +33,15 @@
             width: 100%;
         }
 
-        h1 { text-align: center; margin-bottom: 5px; color: var(--accent); }
+        /* The LOGO is the Easter Egg trigger */
+        h1 { 
+            text-align: center; 
+            margin-bottom: 5px; 
+            color: var(--accent); 
+            cursor: pointer; 
+            user-select: none;
+        }
+        
         .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 0.9em; }
 
         .card {
@@ -40,6 +50,7 @@
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             margin-bottom: 30px;
+            transition: all 0.5s ease;
         }
 
         label { display: block; margin-bottom: 10px; color: var(--text-muted); }
@@ -53,7 +64,7 @@
             border-radius: 8px;
             font-size: 1.2em;
             margin-bottom: 20px;
-            box-sizing: border-box; /* Fontos a padding miatt */
+            box-sizing: border-box; 
         }
 
         button {
@@ -77,7 +88,7 @@
             background: rgba(56, 189, 248, 0.1);
             border-radius: 8px;
             text-align: center;
-            display: none; /* Alapból rejtve */
+            display: none; 
         }
 
         .times-list {
@@ -87,8 +98,8 @@
             margin: 10px 0;
         }
 
-        /* DIAGNOSZTIKA STÍLUSOK */
-        .diag-step { display: none; } /* Alapból minden lépés rejtve */
+        /* DIAGNOSTICS STYLES */
+        .diag-step { display: none; } 
         .diag-step.active { display: block; animation: fadeIn 0.5s; }
 
         .option-btn {
@@ -99,7 +110,7 @@
         }
         .option-btn:hover { background: #475569; }
 
-        /* AFFILIATE DOBOZOK */
+        /* AFFILIATE BOXES */
         .affiliate-box {
             border: 1px solid var(--accent);
             padding: 15px;
@@ -134,62 +145,85 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* MATRIX MODE STYLES (EASTER EGG) */
+        body.matrix-mode {
+            background-color: #000 !important;
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+        body.matrix-mode * {
+            color: #00ff00 !important;
+            border-color: #00ff00 !important;
+        }
+        body.matrix-mode .card {
+            background-color: #000 !important;
+            border: 1px solid #00ff00;
+            box-shadow: none;
+        }
+        body.matrix-mode button {
+            background-color: #003300 !important;
+            color: #00ff00 !important;
+        }
+        body.matrix-mode .affiliate-box {
+            background: transparent !important;
+        }
+
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>FixYourSleep<span style="color:white">.now</span></h1>
-    <div class="subtitle">Ne legyél zombi. Hozd helyre a rutinod.</div>
+    <h1 id="mainTitle" onclick="triggerEasterEgg()">FixYourSleep<span style="color:white">.now</span></h1>
+    <div class="subtitle">Don't be a zombie. Fix your routine.</div>
 
     <div class="card">
-        <h3>💤 Mikor akarsz felkelni?</h3>
+        <h3>💤 When do you need to wake up?</h3>
         <input type="time" id="wakeTime">
-        <button onclick="calculateSleep()">Mikor feküdjek le?</button>
+        <button onclick="calculateSleep()">Calculate Bedtime</button>
         
         <div id="calcResult" class="result-box">
-            <div>Ha ekkor akarsz frissen ébredni, ekkor feküdj le:</div>
+            <div>To wake up fresh, go to bed at:</div>
             <div class="times-list" id="sleepTimes"></div>
-            <div style="font-size: 0.8em; color: var(--text-muted)">90 perces alvási ciklusokkal számolva (+15 perc elalvás).</div>
+            <div style="font-size: 0.8em; color: var(--text-muted)">Based on 90-min sleep cycles (+15 min to fall asleep).</div>
         </div>
     </div>
 
     <div class="card" id="diagnosticSection">
-        <h3>🔧 Alvás Diagnosztika</h3>
-        <p style="color: var(--text-muted); font-size: 0.9em;">Válaszolj 2 kérdésre a személyre szabott blueprinthez.</p>
+        <h3>🔧 Sleep Diagnostics</h3>
+        <p style="color: var(--text-muted); font-size: 0.9em;">Answer 2 questions to get your personal blueprint.</p>
         <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
 
         <div id="step1" class="diag-step active">
-            <label>Mi a legnagyobb bajod alvás közben?</label>
-            <button class="option-btn" onclick="nextStep('hot')">🥵 Túl melegem van / Izzadok</button>
-            <button class="option-btn" onclick="nextStep('cold')">🥶 Fázom / Hideg a lábam</button>
-            <button class="option-btn" onclick="nextStep('pain')">🤕 Fáj a nyakam / hátam</button>
-            <button class="option-btn" onclick="nextStep('noise')">🔊 Zavar a zaj / fény</button>
-            <button class="option-btn" onclick="nextStep('stress')">🧠 Túl sokat agyalok / Stressz</button>
+            <label>What is your biggest struggle?</label>
+            <button class="option-btn" onclick="nextStep('hot')">🥵 I'm too hot / Sweating</button>
+            <button class="option-btn" onclick="nextStep('cold')">🥶 I'm freezing / Cold feet</button>
+            <button class="option-btn" onclick="nextStep('pain')">🤕 Neck / Back pain</button>
+            <button class="option-btn" onclick="nextStep('noise')">🔊 Noise / Light sensitivity</button>
+            <button class="option-btn" onclick="nextStep('stress')">🧠 Overthinking / Stress</button>
         </div>
 
         <div id="step2" class="diag-step">
-            <label>Nemed? (A biológia miatt fontos)</label>
-            <button class="option-btn" onclick="showResult('male')">Férfi</button>
-            <button class="option-btn" onclick="showResult('female')">Nő</button>
+            <label>Select your biological sex (for hormonal context):</label>
+            <button class="option-btn" onclick="showResult('male')">Male</button>
+            <button class="option-btn" onclick="showResult('female')">Female</button>
         </div>
 
         <div id="finalResult" class="diag-step">
-            <h2 style="color: var(--accent); margin-top:0;">A te "Blue-print"-ed:</h2>
+            <h2 style="color: var(--accent); margin-top:0;">Your Blueprint:</h2>
             
             <div class="level-tabs">
-                <div class="tab active" onclick="switchTab('quick')">⚡ Gyors Tipp</div>
-                <div class="tab" onclick="switchTab('science')">🧬 Tudomány</div>
-                <div class="tab" onclick="switchTab('blueprint')">📐 Full Terv</div>
+                <div class="tab active" onclick="switchTab('quick')">⚡ Quick Fix</div>
+                <div class="tab" onclick="switchTab('science')">🧬 Science</div>
+                <div class="tab" onclick="switchTab('blueprint')">📐 Full Plan</div>
             </div>
 
             <div id="content-quick" class="content-section active">
                 <p id="quickTipText">...</p>
                 
                 <div class="affiliate-box">
-                    <span class="affiliate-title">💡 Ajánlott Eszköz:</span>
+                    <span class="affiliate-title">💡 Recommended Tool:</span>
                     <span id="productName">...</span>
-                    <a href="#" id="productLink" class="affiliate-link" target="_blank">Megnézem az árat (Amazon/Alza) &rarr;</a>
+                    <a href="#" id="productLink" class="affiliate-link" target="_blank">Check Price (Amazon) &rarr;</a>
                 </div>
             </div>
 
@@ -198,26 +232,46 @@
             </div>
 
             <div id="content-blueprint" class="content-section">
-                <p>Itt van a teljes esti rutinod:</p>
+                <p>Your optimized evening routine:</p>
                 <ul id="blueprintList" style="padding-left: 20px;"></ul>
             </div>
 
-            <button onclick="resetDiag()" style="margin-top: 20px; background: #334155;">Újrakezdés</button>
+            <button onclick="resetDiag()" style="margin-top: 20px; background: #334155;">Start Over</button>
         </div>
     </div>
 
     <div style="text-align: center; margin-top: 50px; font-size: 0.8em; color: #334155;">
-        &copy; 2026 FixYourSleep. Nem orvosi tanács.
+        &copy; 2026 FixYourSleep. Not medical advice.
     </div>
 </div>
 
 <script>
     /* ========================================
-    LOGIKA RÉSZ
+    LOGIC PART
     ========================================
     */
 
-    // 1. ALVÁS KALKULÁTOR
+    // --- EASTER EGG LOGIC (MATRIX MODE) ---
+    let eggClicks = 0;
+    function triggerEasterEgg() {
+        eggClicks++;
+        if (eggClicks === 7) { // 7 CLICKS TO ACTIVATE
+            document.body.classList.toggle('matrix-mode');
+            
+            // Change title text
+            const title = document.getElementById('mainTitle');
+            if(document.body.classList.contains('matrix-mode')) {
+                title.innerText = "WAKE UP NEO, YOU HAVE TO DEFEAT PUPI";
+                alert("🐇 Follow the white rabbit.");
+            } else {
+                title.innerHTML = 'FixYourSleep<span style="color:white">.now</span>';
+            }
+            eggClicks = 0; // Reset
+        }
+    }
+    // --------------------------------------
+
+    // 1. SLEEP CALCULATOR
     function calculateSleep() {
         const input = document.getElementById('wakeTime').value;
         if (!input) return;
@@ -226,37 +280,28 @@
         const wakeDate = new Date();
         wakeDate.setHours(hours, minutes, 0);
 
-        // Ha a megadott idő már elmúlt mára, akkor holnapra számolunk
         const now = new Date();
         if (wakeDate < now) {
             wakeDate.setDate(wakeDate.getDate() + 1);
         }
 
-        // Visszaszámolás: 4, 5, 6 ciklus (90 perc) + 15 perc elalvás
-        // 1 ciklus = 90 perc. 
-        // 6 ciklus = 9 óra, 5 ciklus = 7.5 óra, 4 ciklus = 6 óra.
-        // + 15 perc, amit az ágyban töltesz elalvás előtt.
-        
-        let resultHTML = "";
-        
-        // 6 ciklus (Legjobb)
+        // 6 cycles (9h), 5 cycles (7.5h), 4 cycles (6h) + 15 min fall asleep time
         let time6 = new Date(wakeDate.getTime() - (9 * 60 * 60 * 1000) - (15 * 60 * 1000));
-        // 5 ciklus (Átlagos)
         let time5 = new Date(wakeDate.getTime() - (7.5 * 60 * 60 * 1000) - (15 * 60 * 1000));
-        // 4 ciklus (Minimum)
         let time4 = new Date(wakeDate.getTime() - (6 * 60 * 60 * 1000) - (15 * 60 * 1000));
 
         const format = (d) => d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 
-        resultHTML += `<div>${format(time6)} <span style="font-size:0.6em; color:#94a3b8">(9h alvás - Legjobb)</span></div>`;
-        resultHTML += `<div>${format(time5)} <span style="font-size:0.6em; color:#94a3b8">(7.5h alvás - Jó)</span></div>`;
-        resultHTML += `<div>${format(time4)} <span style="font-size:0.6em; color:#94a3b8">(6h alvás - Minimum)</span></div>`;
+        let resultHTML = "";
+        resultHTML += `<div>${format(time6)} <span style="font-size:0.6em; color:#94a3b8">(9h - Best)</span></div>`;
+        resultHTML += `<div>${format(time5)} <span style="font-size:0.6em; color:#94a3b8">(7.5h - Good)</span></div>`;
+        resultHTML += `<div>${format(time4)} <span style="font-size:0.6em; color:#94a3b8">(6h - Minimum)</span></div>`;
 
         document.getElementById('sleepTimes').innerHTML = resultHTML;
         document.getElementById('calcResult').style.display = 'block';
     }
 
-    // 2. DIAGNOSZTIKA LOGIKA
+    // 2. DIAGNOSTICS LOGIC
     let selectedIssue = '';
     let selectedGender = '';
 
@@ -277,101 +322,99 @@
     function resetDiag() {
         document.getElementById('finalResult').classList.remove('active');
         document.getElementById('step1').classList.add('active');
-        // Reset tabs
         switchTab('quick');
+        eggClicks = 0; // Reset egg counter just in case
     }
 
     function switchTab(tabName) {
-        // Tabok resetelése
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.content-section').forEach(c => c.classList.remove('active'));
 
-        // Aktív beállítása
         event.target.classList.add('active');
         document.getElementById('content-' + tabName).classList.add('active');
     }
 
-    // TARTALOM GENERÁTOR (ITT VAN A LÉNYEG ÉS A PÉNZ!)
+    // CONTENT GENERATOR (ENGLISH + AFFILIATE)
     function generateContent() {
         let quickTip = "";
         let science = "";
         let product = "";
-        let productUrl = ""; // IDE KELL MAJD A LINKED
+        let productUrl = ""; // REPLACE THESE LINKS WITH YOUR AMAZON LINKS
         let blueprint = [];
 
-        // ESET: MELEG / IZZADÁS
+        // CASE: HOT / SWEATING
         if (selectedIssue === 'hot') {
-            quickTip = "A testednek le kell hűlnie 1-2 fokot az elalváshoz. Te jelenleg 'túlfűtesz'.";
-            science = "A mélyalváshoz (NREM) a maghőmérsékletednek csökkennie kell. Ha meleged van, a szervezeted vért pumpál a bőrödbe, hogy hűtsön, ami ébren tartja a szívedet és megakadályozza a mély alvást. Különösen igaz ez, ha " + (selectedGender === 'male' ? "magas a tesztoszteron szinted." : "a ciklusod luteális fázisában vagy.");
-            product = "Hűtő zselés párna vagy vékony bambusz takaró";
-            productUrl = "https://www.amazon.com/s?k=cooling+pillow"; // CSERÉLD LE A SAJÁTODRA!
+            quickTip = "Your body needs to drop 2-3°F to initiate sleep. You are currently overheating.";
+            science = "Deep sleep (NREM) requires a drop in core body temperature. When you overheat, your body pumps blood to the skin to cool down, keeping your heart rate elevated and blocking deep sleep recovery. This is critical if " + (selectedGender === 'male' ? "you have high testosterone levels." : "you are in the luteal phase of your cycle.");
+            product = "Cooling Gel Pillow / Bamboo Sheets";
+            productUrl = "https://www.amazon.com/s?k=cooling+pillow"; // UPDATE THIS
             blueprint = [
-                "Lefekvés előtt 1 órával: Szellőztess, cél a 19-20 fok.",
-                "Zuhany: Langyos víz (nem hideg, mert az felpörget).",
-                "Ruha: Csak pamut vagy semmi. A műszálba beleizzadsz.",
-                "Eszköz: Használd az ajánlott hűtő párnát."
+                "1 Hour before bed: Ventilate room, aim for 65-68°F (19°C).",
+                "Shower: Lukewarm water (not cold, as it shocks the body awake).",
+                "Clothing: 100% Cotton or nothing. Polyester traps heat.",
+                "Gear: Switch to a cooling gel pillow immediately."
             ];
         }
         
-        // ESET: HIDEG
+        // CASE: COLD
         else if (selectedIssue === 'cold') {
-            quickTip = "Ha fázik a végtagod (kéz/láb), az agyad nem kapja meg a jelet a kikapcsolásra.";
-            science = "Az elalvás paradoxona: A tested maghőjének csökkennie kell, de a végtagjaidnak melegnek kell lenniük (vazodilatáció), hogy a hő távozhasson a központból. A hideg láb gátolja ezt a hőcserét.";
-            product = "Súlyozott takaró (Weighted Blanket)";
-            productUrl = "https://www.amazon.com/s?k=weighted+blanket"; // CSERÉLD LE!
+            quickTip = "If your hands or feet are cold, your brain won't receive the 'sleep signal'.";
+            science = "The Sleep Paradox: Core body temp must drop, but extremities must be warm (vasodilation) to dump heat from the core. Cold feet constrict blood vessels, trapping heat in the core and preventing sleep onset.";
+            product = "Weighted Blanket";
+            productUrl = "https://www.amazon.com/s?k=weighted+blanket"; // UPDATE THIS
             blueprint = [
-                "Lefekvés előtt: Vegyél fel zoknit (igen, szexi, de működik).",
-                "Ital: Forró gyógytea (citromfű vagy kamilla).",
-                "Eszköz: A súlyozott takaró nem csak melegít, de a nyomás csökkenti a kortizolt."
+                "Bedtime: Wear socks. It looks goofy, but science says it works.",
+                "Drink: Hot herbal tea (Chamomile or Lemon balm).",
+                "Gear: Use a Weighted Blanket to increase thermal comfort and reduce cortisol."
             ];
         }
 
-        // ESET: FÁJDALOM (NYAK/HÁT)
+        // CASE: PAIN
         else if (selectedIssue === 'pain') {
-            quickTip = "A párnád valószínűleg nem tartja egyenesen a gerinced. Rossz pozícióban alszol.";
-            science = "Az alvás közbeni mikrokifordulások megfeszítik az izmokat. Az agyad nem tud mély alvásba lépni, mert folyamatosan 'védi' a sérülékeny nyaki szakaszt a fájdalomjelzések miatt.";
-            product = "Ergonómiai Memóriahabos Párna";
-            productUrl = "https://www.amazon.com/s?k=ergonomic+pillow"; // CSERÉLD LE!
+            quickTip = "Your pillow is likely fighting your spine alignment.";
+            science = "Micro-adjustments due to discomfort prevent your brain from entering deep sleep paralysis. Your muscles remain tense to protect the spine, leading to 'waking up tired'.";
+            product = "Ergonomic Memory Foam Pillow";
+            productUrl = "https://www.amazon.com/s?k=ergonomic+pillow"; // UPDATE THIS
             blueprint = [
-                "Pozíció: Ha háton alszol, vékonyabb párna kell. Ha oldalt, vastagabb, hogy kitöltse a vállad feletti teret.",
-                "Nyújtás: 2 perc nyakmozgatás lefekvés előtt.",
-                "Eszköz: Cseréld le a régi tollpárnát memóriahabra."
+                "Position: Back sleepers need thin pillows. Side sleepers need thick ones to fill the shoulder gap.",
+                "Stretch: 2 minutes of neck rolls before bed.",
+                "Gear: Ditch the old feather pillow for structured Memory Foam."
             ];
         }
 
-        // ESET: ZAJ / FÉNY
+        // CASE: NOISE / LIGHT
         else if (selectedIssue === 'noise') {
-            quickTip = "Túl éber vagy. A legkisebb inger is kizökkent.";
-            science = "A modern környezet fényszennyezése gátolja a melatonin (alvási hormon) termelését. Még a LED standby fénye is bezavarhat a cirkadián ritmusba.";
-            product = "Minőségi Alvómaszk + Füldugó szett";
-            productUrl = "https://www.amazon.com/s?k=sleep+mask"; // CSERÉLD LE!
+            quickTip = "Your hunter-gatherer brain is scanning for threats. You are too alert.";
+            science = "Even dim light (like a standby LED) suppresses melatonin production. Sudden noises trigger a cortisol spike, pulling you out of REM sleep instantly.";
+            product = "Sleep Mask + Earplugs Kit";
+            productUrl = "https://www.amazon.com/s?k=sleep+mask"; // UPDATE THIS
             blueprint = [
-                "Sötétítés: Teljes sötétség (Blackout függöny vagy maszk).",
-                "Zaj: Ha nem tudsz csendet csinálni, használj 'White Noise' (fehér zaj) generátort.",
-                "Telefon: Éjszakai mód bekapcsolása 20:00-tól."
+                "Blackout: Total darkness is non-negotiable.",
+                "Audio: If you can't silence the world, mask it with a 'White Noise' machine or app.",
+                "Phone: 'Do Not Disturb' mode ON from 8 PM."
             ];
         }
 
-        // ESET: STRESSZ / AGYALÁS
+        // CASE: STRESS / OVERTHINKING
         else {
-            quickTip = "A tested fáradt, de az agyad pörög. Magas a kortizol szinted.";
-            science = "A lefekvés előtti gondolatspirál béta-hullámokban tartja az agyat. Neked alfa, majd théta hullámokra van szükséged. A kék fény és a stressz gátolja ezt az átmenetet.";
-            product = "Kékfény-szűrő szemüveg (Estére)";
-            productUrl = "https://www.amazon.com/s?k=blue+light+glasses"; // CSERÉLD LE!
+            quickTip = "Your body is tired, but your brain is in Beta-wave mode (alert).";
+            science = "Racing thoughts keep the brain in high-frequency Beta waves. You need to transition to Alpha and Theta waves. Blue light and stress prevent this neurological shift.";
+            product = "Blue Light Blocking Glasses";
+            productUrl = "https://www.amazon.com/s?k=blue+light+glasses"; // UPDATE THIS
             blueprint = [
-                "Brain Dump: Írd ki egy papírra a holnapi feladatokat (így az agyad elengedheti őket).",
-                "Légzés: 4-7-8 technika (4 mp beszív, 7 bent tart, 8 kifúj).",
-                "Eszköz: Kékfény szemüveg 2 órával lefekvés előtt, ha mindenképp gépezned kell."
+                "Brain Dump: Write down tomorrow's tasks on paper to 'offload' them from RAM.",
+                "Breathing: 4-7-8 Technique (Inhale 4s, Hold 7s, Exhale 8s).",
+                "Gear: Wear Blue Light Glasses 2 hours before bed if you must use screens."
             ];
         }
 
-        // HTML BEILLESZTÉSE
+        // INJECT CONTENT
         document.getElementById('quickTipText').innerText = quickTip;
         document.getElementById('scienceText').innerText = science;
         document.getElementById('productName').innerText = product;
         
         let linkElem = document.getElementById('productLink');
-        linkElem.href = productUrl; // Itt állítódik be a link
+        linkElem.href = productUrl; 
         
         let listHTML = "";
         blueprint.forEach(item => listHTML += `<li>${item}</li>`);
